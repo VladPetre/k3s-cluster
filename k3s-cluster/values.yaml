@@ -1,0 +1,43 @@
+# for prom operator to start
+prometheus-node-exporter:
+    hostRootFsMount: false
+
+prometheus:
+  prometheusSpec:
+    retention: 365d
+    retentionSize: 10GB
+    additionalScrapeConfigs:
+    - job_name: rpi-cluster
+      scrape_interval: 30s
+      static_configs:
+        - targets: [ 'foxtrot-svc-ext:9100', 'charlie-svc-ext:9100' ]
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: "local-path"
+          accessModes: [ "ReadWriteOnce" ]
+          resources:
+            requests:
+              storage: 7Gi
+
+#disable alertmanager
+defaultRules:
+  rules:
+    alertmanager: false
+
+alertmanager:
+  enabled: false
+
+#grafana
+grafana:
+  ingress:
+    path: /grafana
+  persistence:
+    enabled: true
+    size: 5Gi
+
+  grafana.ini:
+    server:
+      root_url: '%(protocol)s://%(domain)s:%(http_port)s/grafana'
+      serve_from_sub_path: true
+

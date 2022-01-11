@@ -1,0 +1,57 @@
+﻿version: '3.2'
+
+services:
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce
+    restart: always
+    ports:
+      - "9000:9000"
+    command: -H unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+	  
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "67:67/udp"
+      - "80:80/tcp"
+    environment:
+      TZ: 'Europe/Bucharest'
+      WEBPASSWORD: 'vladminmax.'
+    volumes:
+      - './etc-pihole:/etc/pihole'
+      - './etc-dnsmasq.d:/etc/dnsmasq.d'
+    cap_add:
+      - NET_ADMIN
+    restart: always
+
+  heimdall:
+    image: lscr.io/linuxserver/heimdall
+    container_name: heimdall
+    environment:
+      PUID: '1000'
+      PGID: '1000'
+      TZ: 'Europe/Bucharest'
+    volumes:
+      - './heimdall/config:/config'
+    ports:
+      - "81:80"
+      - "443:443"
+    restart: unless-stopped
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    ports:
+      - "3001:3001"
+    volumes:
+      - './uptime-kuma/data:/app/data'
+    restart: unless-stopped
+    
+volumes:
+  portainer_data:
