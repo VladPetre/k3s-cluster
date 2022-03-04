@@ -1,0 +1,22 @@
+version: '3'
+services:
+
+  agent:
+    image: "rancher/k3s:latest"
+    container_name: win-node-1
+    tmpfs:
+    - /run
+    - /var/run
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65535
+        hard: 65535
+    privileged: true
+    restart: always
+    environment:
+    - K3S_URL=https://192.168.7.153:6443
+    - K3S_TOKEN=K105389955fbb89fcb71823a0fba8c38eb15fc12b66724a20d0dfa28e0ec75a2b48::server:a20362416e705fbe650c8a0a4dc8bec7
+    - K3S_NODE_NAME=win-1
+    volumes:
+    - ./k3s-agent:/var/lib/rancher/k3s

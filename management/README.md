@@ -20,6 +20,8 @@ sudo systemctl enable docker
 The utilities stack runs on a Raspberry Pi
 
 Build the stack from docker-compose.yaml file
+#docker-compose down && docker-compose build --pull && docker-compose up -d
+docker-compose down --rmi all && docker-compose up -d --remove-orphans
 
 Services:
  - portainer

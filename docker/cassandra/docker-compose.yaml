@@ -1,0 +1,109 @@
+version: "3.8"
+
+services:
+
+  cassandra-1:
+    image: cassandra:phd-cass-3-11-11
+    container_name: cassandra-1
+    ports:
+      - 9042:9042 # cqlsh
+      - 7071:7070 # jmx
+    volumes:
+      - "./data/cassandra-1:/var/lib/cassandra"
+    environment: 
+      - "CASSANDRA_SEEDS=cassandra-1"
+      - "CASSANDRA_CLUSTER_NAME=phd-cass"
+      - "CASSANDRA_DC=ruxadu-1"
+      - "CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch"
+      - "MAX_HEAP_SIZE=2G"
+      - "HEAP_NEWSIZE=200M"
+    restart: unless-stopped
+    networks: 
+      - backend
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 3G
+    healthcheck:
+      test: ["CMD", "cqlsh", "-e", "describe keyspaces" ]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 15s
+    build:
+      context: ./configs/cass
+
+  cassandra-2:
+    image: cassandra:phd-cass-3-11-11
+    container_name: cassandra-2
+    ports:
+      - 9142:9042 # cqlsh
+      - 7072:7070 # jmx
+    volumes:
+      - "./data/cassandra-2:/var/lib/cassandra"
+    environment: 
+      - "CASSANDRA_SEEDS=cassandra-1"
+      - "CASSANDRA_CLUSTER_NAME=phd-cass"
+      - "CASSANDRA_DC=ruxadu-1"
+      - "CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch"
+      - "MAX_HEAP_SIZE=2G"
+      - "HEAP_NEWSIZE=200M"
+    restart: unless-stopped
+    networks: 
+      - backend
+    depends_on:
+      cassandra-1:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 3G
+    healthcheck:
+      test: ["CMD", "cqlsh", "-e", "describe keyspaces" ]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 15s
+    build:
+      context: ./configs/cass
+      
+  cassandra-3:
+    image: cassandra:phd-cass-3-11-11
+    container_name: cassandra-3
+    ports:
+      - 9242:9042 # cqlsh
+      - 7073:7070 # jmx
+    volumes:
+      - "./data/cassandra-3:/var/lib/cassandra"
+    environment: 
+      - "CASSANDRA_SEEDS=cassandra-1"
+      - "CASSANDRA_CLUSTER_NAME=phd-cass"
+      - "CASSANDRA_DC=ruxadu-1"
+      - "CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch"
+      - "MAX_HEAP_SIZE=2G"
+      - "HEAP_NEWSIZE=200M"
+    restart: unless-stopped
+    networks: 
+      - backend
+    depends_on:
+      cassandra-1:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 3G
+    healthcheck:
+      test: ["CMD", "cqlsh", "-e", "describe keyspaces" ]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 15s
+    build:
+      context: ./configs/cass
+      
+      
+networks:
+  backend:

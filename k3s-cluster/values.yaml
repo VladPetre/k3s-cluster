@@ -5,7 +5,7 @@ prometheus-node-exporter:
 prometheus:
   prometheusSpec:
     retention: 365d
-    retentionSize: 10GB
+    retentionSize: 7GB
     additionalScrapeConfigs:
     - job_name: rpi-cluster
       scrape_interval: 30s
@@ -30,14 +30,7 @@ alertmanager:
 
 #grafana
 grafana:
-  ingress:
-    path: /grafana
   persistence:
     enabled: true
     size: 5Gi
-
-  grafana.ini:
-    server:
-      root_url: '%(protocol)s://%(domain)s:%(http_port)s/grafana'
-      serve_from_sub_path: true
 

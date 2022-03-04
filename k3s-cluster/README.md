@@ -15,6 +15,10 @@ Homelab main component is actually a k3s cluster running on multiple Raspberry P
 ### K3S and rancher2
 I have installed k3s on Raspberry Pis following [this video](https://www.youtube.com/watch?v=X9fSMGkjtug&ab_channel=NetworkChuck) and just taking care of the updates that were in place in the meantime.
 
+#### Rancher 
+#curl -sfL https://get.rancher.io | INSTALL_RANCHERD_CHANNEL=latest sh -
+on docker desktop using rancher-docker-compose.yaml
+
 Once installed rancher, connect the k3s cluster (on RPIs) following the steps suggested by rancher using insecure option
 
 
@@ -27,6 +31,7 @@ Prerequisites: helm and kubectl should be installed on a machine that can access
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 
 helm install prom-stack prometheus-community/kube-prometheus-stack -n monitoring --values values.yaml
+helm upgrade prom-stack prometheus-community/kube-prometheus-stack -n monitoring --values values.yaml
 ```
 Here, values.yaml is the file where to put only the custom values
 
@@ -67,5 +72,8 @@ sudo systemctl enable nodeexporter && sudo systemctl start nodeexporter
 I need only loki and promtail to gather the logs
 
 ```
-helm upgrade --install loki grafana/loki-stack  --set grafana.enabled=false,prometheus.enabled=false,prometheus.alertmanager.persistentVolume.enabled=false,prometheus.server.persistentVolume.enabled=false
+helm show values loki grafana/loki-stack > loki-values.yaml
+
+helm upgrade --install loki grafana/loki-stack -n monitoring  --set grafana.enabled=false,prometheus.enabled=false,prometheus.alertmanager.persistentVolume.enabled=false,prometheus.server.persistentVolume.enabled=false,loki.persistence.enabled=true,loki.persistence.storageClassName=local-path,loki.persistence.size=10Gi
+
 ```

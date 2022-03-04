@@ -12,15 +12,19 @@ metadata:
 #    traefik.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
-    -  http:
-         paths:
-          - path: /grafana
+    - host: grafana.sierra.lan 
+      http:
+        paths:
+          - path: /
             pathType: Prefix
             backend:
               service:
                 name: prom-stack-grafana
                 port:
                   number: 80
+    - host: prometheus.sierra.lan 
+      http:
+        paths:
           - path: /
             pathType: Prefix
             backend:
@@ -28,11 +32,3 @@ spec:
                 name: prom-stack-kube-prometheus-prometheus
                 port:
                   number: 9090
-#          - path: /test(/|$)(.*)
-          - path: /test
-            pathType: Prefix
-            backend:
-              service:
-                name: nginx-svc
-                port:
-                  number: 80
