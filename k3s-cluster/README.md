@@ -30,6 +30,7 @@ Prerequisites: helm and kubectl should be installed on a machine that can access
 ```
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 
+<!-- helm install prom-stack prometheus-community/kube-prometheus-stack -n monitoring --values values.yaml --version 34.5.0 -->
 helm install prom-stack prometheus-community/kube-prometheus-stack -n monitoring --values values.yaml
 helm upgrade prom-stack prometheus-community/kube-prometheus-stack -n monitoring --values values.yaml
 ```
@@ -74,6 +75,27 @@ I need only loki and promtail to gather the logs
 ```
 helm show values loki grafana/loki-stack > loki-values.yaml
 
-helm upgrade --install loki grafana/loki-stack -n monitoring  --set grafana.enabled=false,prometheus.enabled=false,prometheus.alertmanager.persistentVolume.enabled=false,prometheus.server.persistentVolume.enabled=false,loki.persistence.enabled=true,loki.persistence.storageClassName=local-path,loki.persistence.size=10Gi
+helm upgrade --install loki grafana/loki-stack -n monitoring  --set grafana.enabled=false,prometheus.enabled=false,prometheus.alertmanager.persistentVolume.enabled=false,prometheus.server.persistentVolume.enabled=false,loki.persistence.enabled=true,loki.persistence.storageClassName=local-path,loki.persistence.size=15Gi
 
 ```
+
+### registries
+Create custom registry on docker using management/charlie-docker-compose.yaml
+Copy registries/yaml to master node /etc/rancher/k3s/registries.yaml
+Copy/create docker daemon and set the private registry - on master node in /etc/docker/daemon.json with the content
+
+```
+{
+  "insecure-registries" : ["http://charlie.lan:5000"]
+}
+```
+
+
+
+### copy image for jdk
+
+docker buildx create --use --name adubuilder --config .\buildx-config.toml
+
+docker buildx build -t charlie.lan:5000/openjdk:11-jre -f .\Dockerfile --push --platform=linux/arm64,linux/amd64 .
+
+docker run --name r-caller -p 8070:8080 charlie.lan:5000/ropt/ropt-reactive-caller:latest

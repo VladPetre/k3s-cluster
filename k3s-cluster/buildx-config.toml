@@ -1,0 +1,7 @@
+insecure-entitlements = [ "network.host", "security.insecure"]
+
+# Custom registry.
+[registry."charlie.lan:5000"]
+  mirrors = ["charlie.lan:5000"]
+  http = true
+  insecure = true

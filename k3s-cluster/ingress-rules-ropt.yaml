@@ -1,0 +1,52 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-ropt-traefik
+  namespace: ropt
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    traefik.frontend.passHostHeader: "true"
+    traefik.frontend.rule.type: "PathPrefixStrip"
+spec:
+  rules:
+    - host: receiver.ropt.sierra.lan 
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: receiver-svc
+                port:
+                  number: 8080
+    - host: r-receiver.ropt.sierra.lan
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: r-receiver-svc
+                port:
+                  number: 8080
+    - host: localizer.ropt.sierra.lan 
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: localizer-svc
+                port:
+                  number: 8080
+    - host: r-localizer.ropt.sierra.lan
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: r-localizer-svc
+                port:
+                  number: 8080
+                  

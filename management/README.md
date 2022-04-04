@@ -47,3 +47,5 @@ To connect the second docker host to the portainer the following commands needs 
 ```
 
 After the configuration is done, the second host will be available to be added to portainer
+
+

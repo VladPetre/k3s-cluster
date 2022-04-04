@@ -31,4 +31,4 @@ spec:
               service:
                 name: prom-stack-kube-prometheus-prometheus
                 port:
-                  number: 9090
+                  number: 9090                  
