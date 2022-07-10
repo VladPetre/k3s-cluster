@@ -8,14 +8,16 @@ Homelab main component is actually a k3s cluster running on multiple Raspberry P
 - **traefik ingress controller** - default in k3s
 - **kube-prometheus-stack** *(prometheus, grafana)* - for monitoring the cluster and also the management RPIs
 - **loki-stack** *(promtail, loki)* - for collecting logs
-- **rancher2** - managing the cluster (installed on a VM)
+- **rancher2** - managing the cluster (installed on Docker Desktop)
 
 ## Install
 
-### K3S and rancher2
-I have installed k3s on Raspberry Pis following [this video](https://www.youtube.com/watch?v=X9fSMGkjtug&ab_channel=NetworkChuck) and just taking care of the updates that were in place in the meantime.
+### K3S
+To install k3s use their official repo - https://github.com/k3s-io/k3s-ansible
+sudo ansible-playbook -i inventory/rpik3s/hosts.ini site.yml --ask-pass --ask-become-pass
+My hosts are in inventory/rpik3s/hosts.ini
 
-#### Rancher 
+### Rancher 
 #curl -sfL https://get.rancher.io | INSTALL_RANCHERD_CHANNEL=latest sh -
 on docker desktop using rancher-docker-compose.yaml
 
@@ -30,7 +32,6 @@ Prerequisites: helm and kubectl should be installed on a machine that can access
 ```
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 
-<!-- helm install prom-stack prometheus-community/kube-prometheus-stack -n monitoring --values values.yaml --version 34.5.0 -->
 helm install prom-stack prometheus-community/kube-prometheus-stack -n monitoring --values values.yaml
 helm upgrade prom-stack prometheus-community/kube-prometheus-stack -n monitoring --values values.yaml
 ```
@@ -39,7 +40,7 @@ Here, values.yaml is the file where to put only the custom values
 #### Manual Uninstall
 
 ```
-helm uninstall prom-stack
+helm uninstall prom-stack -n monitoring
 
 kubectl delete crd alertmanagerconfigs.monitoring.coreos.com
 kubectl delete crd alertmanagers.monitoring.coreos.com
@@ -80,13 +81,14 @@ helm upgrade --install loki grafana/loki-stack -n monitoring  --set grafana.enab
 ```
 
 ### registries
-Create custom registry on docker using management/charlie-docker-compose.yaml
-Copy registries/yaml to master node /etc/rancher/k3s/registries.yaml
-Copy/create docker daemon and set the private registry - on master node in /etc/docker/daemon.json with the content
+Create custom registry on docker using management/docker-compose.yaml - see registry image inside
+Copy registries.yaml to master node /etc/rancher/k3s/registries.yaml
+Copy/create docker daemon and set the private registry - on all nodes in /etc/docker/daemon.json with the content
+This can be achieved using ansible playbooks
 
 ```
 {
-  "insecure-registries" : ["http://charlie.lan:5000"]
+  "insecure-registries" : ["http://foxtrot.lan:5000"]
 }
 ```
 
@@ -96,6 +98,6 @@ Copy/create docker daemon and set the private registry - on master node in /etc/
 
 docker buildx create --use --name adubuilder --config .\buildx-config.toml
 
-docker buildx build -t charlie.lan:5000/openjdk:11-jre -f .\Dockerfile --push --platform=linux/arm64,linux/amd64 .
+docker buildx build -t foxtrot.lan:5000/openjdk:11-jre -f .\docker-registry\Dockerfile --push --platform=linux/arm64,linux/amd64 .
 
-docker run --name r-caller -p 8070:8080 charlie.lan:5000/ropt/ropt-reactive-caller:latest
+docker run --name r-caller -p 8070:8080 foxtrot.lan:5000/ropt/ropt-reactive-caller:latest

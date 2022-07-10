@@ -44,14 +44,36 @@ services:
       - "443:443"
     restart: unless-stopped
 
-  uptime-kuma:
-    image: louislam/uptime-kuma:1
-    container_name: uptime-kuma
+  registry:
+    container_name: docker-registry
+    image: registry:2
     ports:
-      - "3001:3001"
+      - 5000:5000
     volumes:
-      - './uptime-kuma/data:/app/data'
+      - ./registry/data:/var/lib/registry
+      - ./docker-registry/config.yaml:/etc/docker/registry/config.yml
     restart: unless-stopped
+    
+  registry-ui:
+    image: joxit/docker-registry-ui:latest
+    container_name: docker-registry-ui
+    ports:
+      - 82:80
+    environment:
+      - REGISTRY_TITLE=My Private Docker Registry
+      - REGISTRY_URL=http://foxtrot.lan:5000
+      - SINGLE_REGISTRY=true
+    depends_on:
+      - registry
+      
+  # uptime-kuma:
+  #   image: louislam/uptime-kuma:1
+  #   container_name: uptime-kuma
+  #   ports:
+  #     - "3001:3001"
+  #   volumes:
+  #     - './uptime-kuma/data:/app/data'
+  #   restart: unless-stopped
     
 volumes:
   portainer_data:

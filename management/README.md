@@ -28,24 +28,7 @@ Services:
  - pihole
  - heimdall
  - uptime-kuma
+ - registry and registry ui
 
-### Second Docker Host
-To connect the second docker host to the portainer the following commands needs to be executed on the second host
-
-```
- cd /etc/systemd/system
- mkdir docker.service.d
- cd docker.service.d/
- nano remote-api.conf
-
-	[Service]
-	ExecStart=
-	ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix://var/run/docker.sock 
- 
- sudo systemctl daemon-reload
- sudo systemctl restart docker
-```
-
-After the configuration is done, the second host will be available to be added to portainer
 
 

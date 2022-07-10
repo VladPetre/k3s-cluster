@@ -1,0 +1,20 @@
+- hosts: k3s_cluster
+  become: yes
+  become_method: sudo
+  remote_user: pi
+  tasks:
+  - name: Update all installed packages using APT module
+    apt:
+      update_cache: true
+      upgrade: 'yes'
+      cache_valid_time: 3600
+    # register: apt_update_status
+
+  - name: Remove packages not needed anymore
+    apt:
+      autoremove: yes
+
+  - name: Reboot
+    reboot:
+    #   post_reboot_delay: 60
+    # when: apt_update_status.changed

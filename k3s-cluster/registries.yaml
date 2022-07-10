@@ -1,4 +1,0 @@
-mirrors:
-  charlie.lan:
-    endpoint:
-      - "http://charlie.lan:5000"
