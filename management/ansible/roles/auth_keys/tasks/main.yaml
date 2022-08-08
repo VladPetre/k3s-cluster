@@ -1,0 +1,5 @@
+---
+- name: Set auth keys file
+  template:
+    src: authorized_keys
+    dest: /home/pi/.ssh/authorized_keys

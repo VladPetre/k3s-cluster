@@ -1,0 +1,21 @@
+---
+- name: Create /etc/docker dir
+  file:
+    path: /etc/docker
+    state: directory
+
+- name: Create /etc/rancher/k3s dir
+  file:
+    path: /etc/rancher/k3s
+    state: directory
+
+- name: Set daemon.json with insecure registry
+  template:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+
+- name: Set registrires file
+  template:
+    src: registries.yaml
+    dest: /etc/rancher/k3s/registries.yaml
+
