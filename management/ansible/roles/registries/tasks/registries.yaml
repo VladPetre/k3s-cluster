@@ -1,4 +1,4 @@
 mirrors:
-  foxtrot.lan:
+  adu.lan:
     endpoint:
-      - "http://foxtrot.lan:5000"
+      - "http://adu.lan:5000"

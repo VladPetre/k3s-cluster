@@ -1,5 +1,6 @@
 ---
-- name: Set auth keys file
-  template:
-    src: authorized_keys
-    dest: /home/pi/.ssh/authorized_keys
+- name: Set authorized keys taken from url
+  ansible.posix.authorized_key:
+    user: pi
+    state: present
+    key: https://github.com/VladPetre.keys

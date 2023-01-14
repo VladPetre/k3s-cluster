@@ -1,6 +1,9 @@
 ---
+
 - hosts: k3srpi
+  gather_facts: yes
   become: yes
   
   roles:
+    - role: cgroup_support
     - role: reboot

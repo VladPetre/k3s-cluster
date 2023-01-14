@@ -1,3 +1,3 @@
 {
-    "insecure-registries" : ["http://foxtrot.lan:5000"]
+    "insecure-registries" : ["http://adu.lan:5000"]
 }

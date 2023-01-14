@@ -2,4 +2,4 @@
 - name: Add entries to etc-hosts
   lineinfile:      
     path: /etc/hosts
-    line: "192.168.7.151\tfoxtrot.lan"
+    line: "192.168.7.101\tadu.lan"

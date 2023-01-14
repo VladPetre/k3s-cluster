@@ -2,12 +2,34 @@ version: '3.2'
 
 services:
   rancher:
-    image: rancher/rancher:latest
+    image: rancher/rancher:v2.7-head #v2.6.9
     container_name: rancher
     ports:
       - "87:80"
       - "447:443"
     volumes:
-      - './rancher:/var/lib/rancher'
+      - '../../rancher-data:/var/lib/rancher'
     restart: unless-stopped
     privileged: true
+  
+  registry:
+    container_name: docker-registry
+    image: registry:2
+    ports:
+      - 5000:5000
+    volumes:
+      - ../../registry-data:/var/lib/registry
+      - ./docker-registry/config.yaml:/etc/docker/registry/config.yml
+    restart: unless-stopped
+
+  registry-ui:
+    image: joxit/docker-registry-ui:latest
+    container_name: docker-registry-ui
+    ports:
+      - 82:80
+    environment:
+      - REGISTRY_TITLE=My Private Docker Registry
+      - REGISTRY_URL=http://192.168.7.101:5000
+      - SINGLE_REGISTRY=true
+    depends_on:
+      - registry

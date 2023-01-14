@@ -9,3 +9,5 @@
     - role: auth_keys
     - role: dns_hosts
     - role: registries
+    - role: cgroup_support
+    - role: reboot

@@ -1,0 +1,7 @@
+insecure-entitlements = [ "network.host", "security.insecure"]
+
+# Custom registry.
+[registry."adu.lan:5000"]
+  mirrors = ["adu.lan:5000"]
+  http = true
+  insecure = true
