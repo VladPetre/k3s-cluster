@@ -23,6 +23,8 @@ on docker desktop using rancher-docker-compose.yaml
 
 Once installed rancher, connect the k3s cluster (on RPIs) following the steps suggested by rancher using insecure option
 
+!!! if Stuck in pending, check if the register file is with localhost or the IP, or check logs for cattle agent in cattle-system ns
+
 
 ### kube-prometheus-stack
 
@@ -52,31 +54,16 @@ kubectl delete crd servicemonitors.monitoring.coreos.com
 kubectl delete crd thanosrulers.monitoring.coreos.com
 ```
 
-#### Install kube-node-exporter on external machine
-```
-sudo mkdir /opt/node-exporter &&
-
-cd /opt/node-exporter &&
-
-sudo wget -O node-exporter.tar.gz https://github.com/prometheus/node_exporter/releases/download/v1.3.1/node_exporter-1.3.1.linux-armv7.tar.gz &&
-
-sudo tar -xvf node-exporter.tar.gz --strip-components=1
-
-sudo nano /etc/systemd/system/nodeexporter.service
-
-## copy the content from nodeexporter.service
-
-sudo systemctl enable nodeexporter && sudo systemctl start nodeexporter
-
-```
 
 ### loki-stack
 I need only loki and promtail to gather the logs
 
 ```
+helm repo add grafana https://grafana.github.io/helm-charts
+
 helm show values loki grafana/loki-stack > loki-values.yaml
 
-helm upgrade --install loki grafana/loki-stack -n monitoring  --set grafana.enabled=false,prometheus.enabled=false,prometheus.alertmanager.persistentVolume.enabled=false,prometheus.server.persistentVolume.enabled=false,loki.persistence.enabled=true,loki.persistence.storageClassName=local-path,loki.persistence.size=15Gi
+helm upgrade --install loki grafana/loki-stack -n monitoring  --set grafana.enabled=false,prometheus.enabled=false,prometheus.alertmanager.persistentVolume.enabled=false,prometheus.server.persistentVolume.enabled=false,loki.persistence.enabled=true,loki.persistence.storageClassName=longhorn,loki.persistence.size=25Gi
 
 ```
 
@@ -91,6 +78,15 @@ This can be achieved using ansible playbooks
   "insecure-registries" : ["http://foxtrot.lan:5000"]
 }
 ```
+
+
+### longhorn
+https://longhorn.io/docs/1.4.0/deploy/install/install-with-helm/
+
+on each node run:
+apt-get install open-iscsi
+
+helm install longhorn longhorn/longhorn --namespace longhorn-system --create-namespace --version 1.4.0
 
 
 

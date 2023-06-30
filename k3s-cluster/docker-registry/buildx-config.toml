@@ -1,7 +1,0 @@
-insecure-entitlements = [ "network.host", "security.insecure"]
-
-# Custom registry.
-[registry."foxtrot.lan:5000"]
-  mirrors = ["foxtrot.lan:5000"]
-  http = true
-  insecure = true

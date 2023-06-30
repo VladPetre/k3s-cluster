@@ -7,9 +7,6 @@ metadata:
     kubernetes.io/ingress.class: "traefik"
     traefik.frontend.passHostHeader: "true"
     traefik.frontend.rule.type: "PathPrefixStrip"
-#    traefik.ingress.kubernetes.io/router.pathmatcher: "PathPrefix"
-#    traefik.frontend.rule.type: "PathPrefixStripRegex"
-#    traefik.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
     - host: grafana.sierra.lan 
@@ -31,4 +28,14 @@ spec:
               service:
                 name: prom-stack-kube-prometheus-prometheus
                 port:
-                  number: 9090                  
+                  number: 9090      
+    - host: longhorn.sierra.lan 
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: longhorn-frontend
+                port:
+                  number: 80            

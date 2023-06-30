@@ -1,4 +1,0 @@
-mirrors:
-  foxtrot.lan:
-    endpoint:
-      - "http://foxtrot.lan:5000"

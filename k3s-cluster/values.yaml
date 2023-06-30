@@ -1,20 +1,20 @@
 prometheus:
   prometheusSpec:
     retention: 365d
-    retentionSize: 10GB
+    retentionSize: 15GB
     additionalScrapeConfigs:
     - job_name: rpi-cluster
-      scrape_interval: 15s
+      scrape_interval: 10s
       static_configs:
         - targets: [ 'foxtrot-svc-ext:9100' ]
     storageSpec:
       volumeClaimTemplate:
         spec:
-          storageClassName: "local-path"
+          storageClassName: "longhorn"
           accessModes: [ "ReadWriteOnce" ]
           resources:
             requests:
-              storage: 10Gi
+              storage: 15Gi
     podMonitorNamespaceSelector: {}
     podMonitorSelector: {}
     podMonitorSelectorNilUsesHelmValues: false
@@ -32,7 +32,11 @@ alertmanager:
 
 #grafana
 grafana:
-  persistence:
-    enabled: true
-    size: 7Gi
+  storageClassName: "longhorn"
+  accessModes:
+  - ReadWriteOnce
+  size: 7Gi
+  finalizers:
+  - kubernetes.io/pvc-protection
+  adminPassword: vladminmax.2251
 
