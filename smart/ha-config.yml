@@ -1,0 +1,34 @@
+# to be added to configuration to received routed traffic
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 192.168.7.176      # Add the IP address of the proxy server
+  ip_ban_enabled: true
+  login_attempts_threshold: 5
+
+influxdb:
+  api_version: 2
+  ssl: false
+  host: 192.168.7.173
+  port: 8086
+  token: HCL5LNdv0gur47ZeZh3jA4JQW2pGchptUgjJJizerMDmNEQviWoiTwLdLNDUHb6Ahb6cPNhu7JldjLoJkChCsQ==
+  bucket: ha-db0
+  organization: aduh
+  max_retries: 3
+  tags:
+    source: HA
+  tags_attributes:
+    - friendly_name
+  default_measurement: units
+  exclude:
+    entities:
+      - zone.home
+    domains:
+      - persistent_notification
+      - person
+  include:
+    domains:
+      - sensor
+      - binary_sensor
+    entities:
+      - weather.home

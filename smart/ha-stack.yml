@@ -1,0 +1,56 @@
+version: '3.8'
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - /home/pi/ha-config:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
+
+  esphome:
+    container_name: esphome
+    image: esphome/esphome
+    restart: unless-stopped
+    ports:
+      - 6052:6052
+    environment:
+      - TZ=Europe/Bucharest
+    volumes:
+      - /home/pi/esphome/config:/config
+    privileged: true
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    network_mode: host
+
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    # ports:
+    #   - "8086:8086"
+    volumes:
+      - /home/pi/influxdb2/config:/etc/influxdb2
+      - /home/pi/influxdb2/db:/var/lib/influxdb2
+    network_mode: host
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - 9100:9100

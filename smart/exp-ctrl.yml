@@ -1,0 +1,123 @@
+
+### sensors ###
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: D5
+      mode: INPUT_PULLUP
+      inverted: true
+    name: "RedButton"
+    id: "ctrl_red_btn"
+    internal: true
+    on_multi_click:
+    - timing:
+      - ON for at most 1s
+      - OFF for at least 0.5s
+      then:
+        - logger.log: "RedButton Single Short Clicked"
+        - homeassistant.event:
+            event: esphome.btn_red_click
+            data:
+              action: single_click
+    - timing:
+      - ON for at most 1s
+      - OFF for at most 1s
+      - ON for at most 1s
+      - OFF for at least 0.2s
+      then:
+        - logger.log: "RedButton Double Clicked"
+        - homeassistant.event:
+            event: esphome.btn_red_click
+            data:
+              action: double_click
+    - timing:
+      - ON for at least 2.2s
+      then:
+        - logger.log: "RedButton Click and Hold"
+        - homeassistant.event:
+            event: esphome.btn_red_click
+            data:
+              action: hold
+    filters:
+     delayed_on_off: 30 ms
+
+  - platform: gpio
+    pin:
+      number: D6
+      mode: INPUT_PULLUP
+      inverted: true
+    name: "YellowButton"
+    id: "ctrl_yellow_btn"
+    internal: true
+    on_multi_click:
+    - timing:
+      - ON for at most 1s
+      - OFF for at least 0.5s
+      then:
+        - logger.log: "YellowButton Single Short Clicked"
+        - homeassistant.event:
+            event: esphome.btn_yellow_click
+            data:
+              action: single_click
+    - timing:
+      - ON for at most 1s
+      - OFF for at most 1s
+      - ON for at most 1s
+      - OFF for at least 0.2s
+      then:
+        - logger.log: "YellowButton Double Clicked"
+        - homeassistant.event:
+            event: esphome.btn_yellow_click
+            data:
+              action: double_click
+    - timing:
+      - ON for at least 2.2s
+      then:
+        - logger.log: "YellowButton Click and Hold"
+        - homeassistant.event:
+            event: esphome.btn_yellow_click
+            data:
+              action: hold
+    filters:
+     delayed_on_off: 30 ms
+
+  - platform: gpio
+    pin:
+      number: D7
+      mode: INPUT_PULLUP
+      inverted: true
+    name: "GreenButton"
+    id: "ctrl_green_btn"
+    internal: true
+    on_multi_click:
+    - timing:
+      - ON for at most 1s
+      - OFF for at least 0.5s
+      then:
+        - logger.log: "GreenButton Single Short Clicked"
+        - homeassistant.event:
+            event: esphome.btn_green_click
+            data:
+              action: single_click
+    - timing:
+      - ON for at most 1s
+      - OFF for at most 1s
+      - ON for at most 1s
+      - OFF for at least 0.2s
+      then:
+        - logger.log: "GreenButton Double Clicked"
+        - homeassistant.event:
+            event: esphome.btn_green_click
+            data:
+              action: double_click
+    - timing:
+      - ON for at least 2.2s
+      then:
+        - logger.log: "GreenButton Click and Hold"
+        - homeassistant.event:
+            event: esphome.btn_green_click
+            data:
+              action: hold
+    filters:
+     delayed_on_off: 30 ms
+     
