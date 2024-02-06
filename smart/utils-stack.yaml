@@ -8,28 +8,28 @@ services:
       - "53:53/tcp"
       - "53:53/udp"
       - "67:67/udp"
-      - "80:80/tcp"
+      - "81:80/tcp"
     environment:
       TZ: 'Europe/Bucharest'
-      WEBPASSWORD: 'vladminmax.'
+      WEBPASSWORD: '<redacted>'
       FTLCONF_LOCAL_IPV4: '192.168.7.176'
     volumes:
-      - './etc-pihole:/etc/pihole'
-      - './etc-dnsmasq.d:/etc/dnsmasq.d'
+      - '/home/pi/etc-pihole:/etc/pihole'
+      - '/home/pi/etc-dnsmasq.d:/etc/dnsmasq.d'
     cap_add:
       - NET_ADMIN
     dns: 
     - 127.0.0.1
     restart: always
   
-  uptime-kuma:
-    image: louislam/uptime-kuma:1
-    container_name: uptime-kuma
-    ports:
-      - "3001:3001"
-    volumes:
-      - './uptime-kuma/data:/app/data'
-    restart: unless-stopped
+  # uptime-kuma:
+  #   image: louislam/uptime-kuma:1
+  #   container_name: uptime-kuma
+  #   ports:
+  #     - "3001:3001"
+  #   volumes:
+  #     - '/home/pi/uptime-kuma/data:/app/data'
+  #   restart: unless-stopped
 
   wireguard:
     image: lscr.io/linuxserver/wireguard:latest
@@ -64,12 +64,12 @@ services:
     image: traefik:latest
     container_name: traefik
     restart: always
-    security_opt:
-      - no-new-privileges:true
-    ports:
-      - 81:80
-      - 443:443
-      - 8080:8080
+    # security_opt:
+    #   - no-new-privileges:true
+    # ports:
+    #   - 81:80
+    #   - 443:443
+    #   - 8080:8080
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -123,3 +123,18 @@ services:
       - '--web.enable-lifecycle'
     ports:
       - 9090:9090
+
+  # cadvisor:
+  #   image: gcr.io/cadvisor/cadvisor:v0.47.2
+  #   container_name: cadvisor
+  #   ports:
+  #   - 8181:8080
+  #   volumes:
+  #   - /:/rootfs:ro
+  #   - /var/run:/var/run:rw
+  #   - /sys:/sys:ro
+  #   - /var/lib/docker/:/var/lib/docker:ro
+  #   command:
+  #   - "--docker_only=true"
+  #   - "--housekeeping_interval=30s"
+  #   - "--disable_metrics=accelerator,cpu_topology,disk,memory_numa,tcp,udp,percpu,sched,process,hugetlb,referenced_memory,resctrl,cpuset,advtcp"
