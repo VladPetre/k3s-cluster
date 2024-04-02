@@ -12,6 +12,17 @@ http:
       tls: 
         certResolver: aduh-prod
       service: homeassistant
+    # portainer:
+    #   # For Homeassistant config, check: https://www.home-assistant.io/integrations/http/#reverse-proxies
+    #   # This relies on Homeassistant using http. No certs are needed in the Homeassistant config.
+    #   entryPoints:
+    #     - "websecure"
+    #   rule: "Host(`portainer.ruxadu.go.ro`)"
+    #   middlewares:
+    #     - default-headers
+    #   tls: 
+    #     certResolver: aduh-prod
+    #   service: portainer
  #end region routers
 
  #region services
@@ -21,6 +32,11 @@ http:
         servers:
           - url: "http://192.168.7.173:8123"
         passHostHeader: true
+    # portainer:
+    #   loadBalancer:
+    #     servers:
+    #       - url: "http://192.168.7.173:9443"
+    #     passHostHeader: true
  #end region services
 
   middlewares:

@@ -1,6 +1,24 @@
 version: '3.8'
 
 services:  
+
+  # dockge:
+  #   image: louislam/dockge:1
+  #   restart: unless-stopped
+  #   ports:
+  #     - 5001:5001
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - /home/pi/dockge-data:/app/data
+  #     # Stacks Directory
+  #     # ⚠️ READ IT CAREFULLY. If you did it wrong, your data could end up writing into a WRONG PATH.
+  #     # ⚠️ 1. FULL path only. No relative path (MUST)
+  #     # ⚠️ 2. Left Stacks Path === Right Stacks Path (MUST)
+  #     - /home/pi/stacks:/home/pi/stacks
+  #   environment:
+  #     # Tell Dockge where is your stacks directory
+  #     - DOCKGE_STACKS_DIR=/home/pi/stacks
+
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
@@ -12,7 +30,7 @@ services:
     environment:
       TZ: 'Europe/Bucharest'
       WEBPASSWORD: '<redacted>'
-      FTLCONF_LOCAL_IPV4: '192.168.7.176'
+      FTLCONF_LOCAL_IPV4: '192.168.7.173'
     volumes:
       - '/home/pi/etc-pihole:/etc/pihole'
       - '/home/pi/etc-dnsmasq.d:/etc/dnsmasq.d'
@@ -66,10 +84,10 @@ services:
     restart: always
     # security_opt:
     #   - no-new-privileges:true
-    # ports:
-    #   - 81:80
-    #   - 443:443
-    #   - 8080:8080
+    ports:
+      - 81:80
+      - 443:443
+      - 8080:8080
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro

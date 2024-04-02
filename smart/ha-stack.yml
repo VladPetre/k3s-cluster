@@ -8,6 +8,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
     privileged: true
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
     network_mode: host
 
   esphome:
@@ -38,19 +40,3 @@ services:
       - /home/pi/influxdb2/config:/etc/influxdb2
       - /home/pi/influxdb2/db:/var/lib/influxdb2
     network_mode: host
-
-  node-exporter:
-    image: prom/node-exporter:latest
-    container_name: node-exporter
-    restart: unless-stopped
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.rootfs=/rootfs'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
-    ports:
-      - 9100:9100
